@@ -1,0 +1,24 @@
+function create_associated_products_for_all_courses() {
+    // Get all the 'course' posts
+    $courses = get_posts([
+        'post_type' => 'courses',
+        'numberposts' => -1,
+    ]);
+
+    // For each 'course' post, create an associated product if it doesn't exist yet
+    foreach($courses as $course) {
+        // Get the associated product ID
+        $product_id = get_post_meta($course->ID, '_associated_product_id', true);
+
+        // If an associated product already exists, skip this iteration
+        if($product_id && get_post($product_id)) {
+            continue;
+        }
+
+        // If an associated product doesn't exist yet, create one
+        create_associated_product($course->ID);
+    }
+}
+
+// Run this function
+create_associated_products_for_all_courses();
